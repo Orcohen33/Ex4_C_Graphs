@@ -32,11 +32,3 @@ pnode newNode(int node_num);
 void TSP_cmd(pnode *head);
 int v_sizes();
 #endif //EX4_C_GRAPH_H
-/*
- *     node* _newNode = (node *) malloc(sizeof(node));
-    if(_newNode == NULL) exit(1);
-    _newNode->node_num = node_num;
-    _newNode->edges = NULL;
-    _newNode->next = NULL;
-    return _newNode;
- */

@@ -80,13 +80,12 @@ void insert_node_cmd(pnode *head, char *charInput) {
         int src;
         scanf("%d", &src);
         pnode newNodee = searchNodeID(head, src);
-//        deleteOutEdges(head,newNode);
+
         // SRC NOT FOUND
         if (newNodee == NULL) {
             // ADD NODE
             newNodee = newNode(src);
-//            newNode = malloc(sizeof(pnode));
-//            newNodee->node_num = src;
+
             newNodee->weight = 0;
             newNodee->tag = 0;
             newNodee->prev = -1;
@@ -124,7 +123,6 @@ void insert_node_cmd(pnode *head, char *charInput) {
         }
     }
 }
-
 
 void delete_node_cmd(pnode *head, char *charInput) {
 
@@ -172,12 +170,12 @@ void printGraph_cmd(pnode head) {
 
 } //for self debug
 
-void deleteGraph_cmd(pnode *head, char *inputChar){
+void deleteGraph_cmd(pnode *head, char *inputChar) {
     pnode delNode = *head;
-    while(delNode->next!=NULL){
+    while (delNode->next != NULL) {
         pnode run = delNode->next;
 
-        deleteOutEdges(head,delNode);
+        deleteOutEdges(head, delNode);
         pnode *temp = head;
         pnode temp2 = *head;
         *temp = temp2->next;
@@ -185,31 +183,9 @@ void deleteGraph_cmd(pnode *head, char *inputChar){
         free(temp2);
         delNode = run;
     }
-    deleteOutEdges(head,delNode);
+    deleteOutEdges(head, delNode);
     free(delNode);
 }
-// A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 B 5 0 4 2 1 B 2 1 3 5 1
-//void deleteGraph_cmd(pnode *head, char *inputChar) {
-//    pnode delNode = *head;
-//    while (delNode->next != NULL) {
-//        pnode run = delNode->next;
-//
-//        deleteinEdges(head, delNode);
-//        if(delNode->edges != NULL) deleteOutEdges(head, delNode);
-//
-//        //------------------if the node is the head-------------------------
-//        pnode *temp = head;
-//        pnode temp2 = *head;
-//        *temp = temp2->next;
-//        temp2->next = NULL;
-//        free(temp2);
-//        delNode = run;
-//    }
-////    *head = NULL;
-//    if(delNode->edges != NULL) deleteOutEdges(head, delNode);
-//    deleteinEdges(head, delNode);
-//    free(delNode);
-//}
 
 void shortsPath_cmd(pnode *head) {
 
@@ -224,74 +200,10 @@ void shortsPath_cmd(pnode *head) {
     resetWeightNTags(head);
     int sp = dijkstra(srcNode, destNode, head);
 
-    printf("Dijsktra shortest path: %d\n", sp);
-
-//    free(srcNode);
-//    free(destNode);
-}
-
-
-//===============================================================================
-int dijkstra(pnode src, pnode dest, pnode *psrc) {
-    pnode head = newNode2(src->node_num, 0);
-    pnode *phead = &head;
-    head->tag = 1;
-    pnode curr = src;
-    curr->weight = 0;
-    curr->tag = 1;
-
-    while (!isEmpty(phead)) {
-        curr = searchNodeID(psrc, head->node_num);
-        curr->tag = 1;
-        pop(phead);
-
-
-        //Explore all the adj nodes
-        pedge edgeData = curr->edges;
-        while (edgeData != NULL) {
-            pnode adj = edgeData->endpoint;
-            if (adj == src) {
-                edgeData = edgeData->next;
-                continue;
-            }
-
-            //Here we replace the weight if there any shorter path
-            int pathWeight = curr->weight + edgeData->weight;
-            if (adj->weight >= pathWeight || adj->weight == 0) {
-                adj->weight = pathWeight;
-                if (searchNodeID(phead, adj->node_num) != NULL) {
-                    searchNodeID(phead, adj->node_num)->weight = pathWeight;
-                    adj->prev = curr->node_num;
-                    edgeData = edgeData->next;
-                    continue;
-                }
-                adj->prev = curr->node_num;
-            }
-            if (adj->tag == 0) {
-                push(phead, adj->node_num, adj->weight);
-            }
-            edgeData = edgeData->next;
-        }
-
-    }
-    free(head);
-
-//    int ans = searchNodeID(psrc,dest->node_num)->node_num;
-    return searchNodeID(psrc, dest->node_num)->weight;
-}
-
-void resetWeightNTags(pnode *head) {
-    pnode run = *head;
-    while (run != NULL) {
-        run->weight = 0;
-        run->tag = 0;
-        run->prev = -1;
-        run = run->next;
-    }
+    printf("Dijsktra shortest path: %d \n", sp);
 
 }
 
-//===============================================================================
 void TSP_cmd(pnode *head) {
     int city;
     int ans = -1;
@@ -302,14 +214,12 @@ void TSP_cmd(pnode *head) {
         int n;
         scanf("%d", &n);
         cities[i] = searchNodeID(head, n);
-//        printf("%d. id: %d\t\t",i,cities[i]->node_num);
     }
     bool contains[city];
     for (int i = 0; i < city; ++i) { contains[i] = false; }
     for (int i = 0; i < city; ++i) {
         for (int j = 0; j < city; ++j) {
             if (i == j) continue;
-//            printf("path ->\n");
             resetWeightNTags(head);
             int dist = dijkstra(cities[i], cities[j], head);
             pnode reversePath = cities[j];
@@ -336,71 +246,8 @@ void TSP_cmd(pnode *head) {
         }
     }
 
-    // ================================NEW===========================================
 
-//    if (ans == -1) {
-//        for (int i = 0; i < city; ++i) { contains[i] = false; }
-//
-//        for (int i = 0; i < city; ++i) {
-//            for (int j = 0; j < city; ++j) {
-//                if (i == j) continue;
-//                resetWeightNTags(head);
-//                int dist = dijkstra(cities[i], cities[j], head);
-//
-//                pnode reversePath = cities[j];
-//                // go reverse on all prevs to check if cities contain in -> become true on bool array
-//                int index_of_contains = 0;
-//                for (int k = 0; k < city; ++k) { contains[k] = false; }
-//                while (reversePath->prev != -1) {
-//
-//                    for (int k = 0; k < city; ++k) {
-//                        if (reversePath->node_num == cities[k]->node_num) {
-//                            contains[index_of_contains++] = true;
-//                            break;
-//                        }
-//                    }
-//                    reversePath = searchNodeID(head, reversePath->prev);
-//                }
-//                for (int k = 0; k < city; ++k) {
-//                    if (reversePath->node_num == cities[k]->node_num && contains[index_of_contains] == false)
-//                        contains[index_of_contains++] = true;
-//                }
-//                if (j + 1 < city && i + 1 < city) {
-//                    i += 1, j += 1;
-//                    resetWeightNTags(head);
-//                    dist += dijkstra(cities[i], cities[j], head);
-//
-//                    reversePath = cities[j];
-//                    while (reversePath->prev != -1) {
-//                        for (int k = 0; k < city; ++k) {
-//                            if (reversePath->node_num == cities[k]->node_num &&
-//                                contains[index_of_contains] == false)
-//                                contains[index_of_contains++] = true;
-//                        }
-//                        reversePath = searchNodeID(head, reversePath->prev);
-//                    }
-//                    for (int k = 0; k < city; ++k) {
-//                        if (reversePath->node_num == cities[k]->node_num &&
-//                            contains[index_of_contains] == false)
-//                            contains[index_of_contains++] = true;
-//                    }
-//                }
-//
-//                bool allIn = true;
-//                for (int k = 0; k < city; ++k) { if (contains[k] == false) allIn = false; }
-//                if (allIn) {
-//                    if (dist < ans || ans == -1) {
-//                        ans = dist;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//        }
-//
-//    }
-
-    printf("TSP shortest path: %d\n", ans);
+    printf("TSP shortest path: %d \n", ans);
 }
 
 
@@ -453,7 +300,6 @@ bool updateEdge(pnode src, pnode dest, int weight) {
     return false;
 }
 
-// A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 T 3 2 1 0 S 2 0
 void addEdge(pnode src, pnode dest, int weight) {
     pedge ed = malloc(sizeof(edge));
     pedge runEdge = src->edges;
@@ -476,7 +322,8 @@ void addEdge(pnode src, pnode dest, int weight) {
 void deleteinEdges(pnode *head, pnode node) {
     pnode run = *head;
     while (run != NULL) {
-        if(run==node) run = run->next;        // Run on all edges of "run" and check if there any dest edge equals to "node"
+        if (run == node)
+            run = run->next;        // Run on all edges of "run" and check if there any dest edge equals to "node"
         pedge prev, curr = run->edges;
         // if the first edge dest point is "node" delete it and continue to next node edges
         if (curr != NULL) {
@@ -511,7 +358,6 @@ void deleteinEdges(pnode *head, pnode node) {
     }
 }
 
-// A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 X B 5 0 4 2 1 X B 2 1 3 5 1 X A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 X
 void deleteOutEdges(pnode *head, pnode node) {
     pnode run = *head;
     //get
@@ -530,6 +376,61 @@ void deleteOutEdges(pnode *head, pnode node) {
     run->edges = NULL;
 }
 
+int dijkstra(pnode src, pnode dest, pnode *psrc) {
+    pnode head = newNode2(src->node_num, 0);
+    pnode *phead = &head;
+    head->tag = 1;
+    pnode curr = src;
+    curr->weight = 0;
+    curr->tag = 1;
+
+    while (!isEmpty(phead)) {
+        curr = searchNodeID(psrc, head->node_num);
+        curr->tag = 1;
+        pop(phead);
+
+
+        //Explore all the adj nodes
+        pedge edgeData = curr->edges;
+        while (edgeData != NULL) {
+            pnode adj = edgeData->endpoint;
+            if (adj == src) {
+                edgeData = edgeData->next;
+                continue;
+            }
+
+            //Here we replace the weight if there any shorter path
+            int pathWeight = curr->weight + edgeData->weight;
+            if (adj->weight >= pathWeight || adj->weight == 0) {
+                adj->weight = pathWeight;
+                if (searchNodeID(phead, adj->node_num) != NULL) {
+                    searchNodeID(phead, adj->node_num)->weight = pathWeight;
+                    adj->prev = curr->node_num;
+                    edgeData = edgeData->next;
+                    continue;
+                }
+                adj->prev = curr->node_num;
+            }
+            if (adj->tag == 0) {
+                push(phead, adj->node_num, adj->weight);
+            }
+            edgeData = edgeData->next;
+        }
+
+    }
+    free(head);
+    return searchNodeID(psrc, dest->node_num)->weight;
+}
+
+void resetWeightNTags(pnode *head) {
+    pnode run = *head;
+    while (run != NULL) {
+        run->weight = 0;
+        run->tag = 0;
+        run->prev = -1;
+        run = run->next;
+    }
+}
 
 //======================================================================
 //======================== PRIORITY QUEUE ==============================
@@ -599,58 +500,3 @@ int isEmpty(node **head) {
 //======================================================================
 //======================= ^PRIORITY QUEUE^ =============================
 //======================================================================
-
-
-
-/*
- * void deleteinEdges(pnode *head, pnode node) {
-    pnode run = *head;
-    while (run != NULL){
-        // if run is node -> continue
-        if ( run == node){
-            run = run->next;
-            continue;
-        }
-
-        // Run on all edges of "run" and check if there any dest edge equals to "node"
-        pedge prev,curr = run->edges;
-        // if the first edge dest point is "node" delete it and continue to next node edges
-        if(curr->endpoint == node){
-            run->edges = curr->next;
-            free(curr);
-            run = run->next;
-            continue;
-        }
-        // if edge with endpoint equal to "node" is in middle or in the end;
-        while(curr != NULL){
-            prev = curr;
-            if(curr -> next ->endpoint == node){
-                if(curr ->next ->next !=NULL) {
-                    prev->next = curr->next->next;
-//                    free(curr);
-                    continue;
-                }
-                else{
-                    prev ->next = NULL;
-//                    free(curr);
-                    continue;
-                }
-
-//            if(curr->endpoint == node){
-//                if(curr ->next != NULL) {
-//                    prev->next = curr->next;
-//                    free(curr);
-//                    break;
-//                }
-//                else{
-//                    prev->next = NULL;
-//                    free(curr);
-//                    break;
-//                }
-            }
-            curr = curr ->next;
-        }
-        run= run->next;
-    }
-}
- */
