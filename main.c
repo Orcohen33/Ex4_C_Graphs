@@ -19,6 +19,7 @@ int main() {
     bool firstTime = true;
     char *_case2 = (char *) malloc(1);
     *_case2 = 'w';
+    char _case = 'w';
     while(*_case2!='\n') {
         scanf("%c", &_case);
         *_case2 = _case;
